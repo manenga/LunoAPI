@@ -1,3 +1,9 @@
+//
+// Author: Manenga Mungandi
+// Luno Public API
+// Ref: https://www.luno.com/en/developers/api
+//
+
 import UIKit
 import PlaygroundSupport
 
@@ -41,7 +47,6 @@ struct AllTickers: Codable {
 }
 
 struct TransactionsGroup: Codable {
-//    var capabilities: Capability!
     var id: String!
     var isDefault: Bool!
     var transactions: [Transaction]!
@@ -86,8 +91,6 @@ struct Transaction: Codable {
     var balanceDelta: Float?
     var currency: String!
     var descriptionField: String!
-//    var detailFields: DetailField!
-//    var details: Detail!
     var rowIndex: Int!
     var timestamp: Date!
     
@@ -95,7 +98,6 @@ struct Transaction: Codable {
         case accountId = "account_id"; case availableDelta = "available_delta";
         case available; case timestamp; case balance; case currency; case rowIndex = "row_index";
         case balanceDelta = "balance_delta"; case descriptionField = "description";
-        //    case detailFields; case details
     }
     
     init(from decoder: Decoder) throws {
@@ -167,7 +169,7 @@ struct Trade: Codable {
     }
 }
 
-struct Ticker: Codable { // Mappable {
+struct Ticker: Codable {
     var ask: String! = "0.0"
     var bid: String! = "0.0"
     var lastTrade: String! = "0.0"
@@ -255,7 +257,6 @@ func printTrade(_ trade: Trade) {
     let type = trade.isBuy ? "Bought" : "Sold"
     formatter.dateFormat = "HH:mm:ss dd-MMM-yyyy"
     print("\(type) \(trade.volume ?? "") at \(trade.price ?? "")")
-//    print("\(type!) \(trade.volume!) at \(trade.price!) at \(formatter.string(from: trade.timestamp))")
 }
 
 func printTransaction(_ trnx: Transaction) {
@@ -264,8 +265,6 @@ func printTransaction(_ trnx: Transaction) {
 
 func displayTicker(data: Data, pair: Pairs) {
     do {
-        // https://stackoverflow.com/questions/33186051/swift-convert-struct-to-json
-        
         let multiple: Bool = pair == .all ? true : false
         let showInverse = pair == .XBTETH ? true : false
         
@@ -370,8 +369,8 @@ func viewPublicTrades(pair: Pairs) {
 }
 
 func getRequest(_ myUrl: URL) -> URLRequest {
-    let username = "gbtqqxw93u7f7"
-    let password = "M0JzXL2hscfSFsz69r7uPzSpUFH2R-RS3hRryl6KLN0"
+    let username = ""
+    let password = ""
     let loginString = String(format: "%@:%@", username, password)
     let loginData = loginString.data(using: String.Encoding.utf8)!
     let base64LoginString = loginData.base64EncodedString()
@@ -388,7 +387,6 @@ func checkBalance() {
     print("==== ACCOUNT BALANCE SUMMARY ====\n\n")
     let url = URL(string: "https://api.mybitx.com/api/1/balance")!
     
-    // executing the call
     let session = URLSession(configuration: URLSessionConfiguration.default)
     let task = session.dataTask(with: getRequest(url), completionHandler: {data, response, error -> Void in
         guard let data = data, error == nil else {
@@ -432,7 +430,6 @@ func viewTransactions(currency: Currency) {
     let urlStr = "https://api.mybitx.com/api/1/accounts/\(accountId)/transactions?min_row=\(min)&max_row=\(max)"
     let url = URL(string: urlStr)!
     
-    // executing the call
     let session = URLSession(configuration: URLSessionConfiguration.default)
     let task = session.dataTask(with: getRequest(url), completionHandler: {data, response, error -> Void in
         guard let data = data, error == nil else {
@@ -445,7 +442,6 @@ func viewTransactions(currency: Currency) {
             let root = try JSONDecoder().decode(TransactionsGroup.self, from: data)
             var transactions: [Transaction] = root.transactions
             transactions = transactions.sorted(by: { $0.rowIndex < $1.rowIndex })
-//            transactions = transactions.reversed()
             
             if (debug) { print(contents); print(transactions) }
 
@@ -468,7 +464,6 @@ func viewTransactions(currency: Currency) {
                 }
             }
             print("Net coins \(round(totalCoins))")
-//            print("Net value \(round(totalSpend))")
             
         } catch { print(error) }
         
@@ -481,7 +476,6 @@ func viewTransactions(currency: Currency) {
 func viewMyTrades(pair: Pairs) {
     let url = URL(string: "https://api.mybitx.com/api/1/listtrades?pair=\(pair)")!
     
-    // executing the call
     let session = URLSession(configuration: URLSessionConfiguration.default)
     let task = session.dataTask(with: getRequest(url), completionHandler: {data, response, error -> Void in
         guard let data = data, error == nil else {
@@ -510,7 +504,6 @@ func viewMyTrades(pair: Pairs) {
 func viewMyTradingHistory(pair: Pairs) {
     let url = URL(string: "https://api.mybitx.com/api/1/listtrades?pair=\(pair)")!
     
-    // executing the call
     let session = URLSession(configuration: URLSessionConfiguration.default)
     let task = session.dataTask(with: getRequest(url), completionHandler: {data, response, error -> Void in
         guard let data = data, error == nil else {
@@ -647,13 +640,6 @@ func getCoinOdds(pair: Pairs){
     print()
 }
 
-func funcNmame() {
-    //when was the last time the market hit my price?
-}
-
-func tradingInsights(sinceWhen: TimePeriod) {
-    print("Hold on lol")
-}
 
 // MARK: Testing
 
